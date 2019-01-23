@@ -7,8 +7,9 @@ export interface IStationOutput {
     };
     activity: {
         since: number,
-        lastStart: number,
-        lastEnd: number,
+        last: number,
     };
-    data: { [key: string]: any };
+    data: {
+        [key: string]: any,
+    };
 }
