@@ -6,5 +6,5 @@ export interface IResult extends Document {
     _id: string;
     stationID: string;
     timestamp: number;
-    data: IStation01;
+    data: IStation01; // | IStation02 | ...
 }

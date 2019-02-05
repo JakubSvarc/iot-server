@@ -1,8 +1,9 @@
-import { Controller, Put, Post, HttpCode, Body } from '@nestjs/common';
+import { Controller, Put, Post, Get, HttpCode, Body } from '@nestjs/common';
 
 import { ApiService } from './api.service';
 import { IUser } from '../db/interfaces/user.interface';
 import { IStation } from '../db/interfaces/station.interface';
+import { IValidationDto } from './interfaces/validation.dto';
 import { ILoginDto } from './interfaces/login.dto';
 import { IStationOutput } from './interfaces/station.output';
 
@@ -18,7 +19,7 @@ export class ApiController {
 
 	@Post('user/login')
 	@HttpCode(200)
-  	private async login(@Body() body: ILoginDto): Promise<IUser> {
+  	private async login(@Body() body: ILoginDto): Promise<IValidationDto> {
     	return await this.appService.login(body);
 	}
 
@@ -28,7 +29,7 @@ export class ApiController {
     	return await this.appService.createStation(body);
 	}
 
-	@Post('station/get/many')
+	@Get('station/get/many')
 	@HttpCode(200)
 	private async getStationMany(@Body() body: {email: string, password: string}): Promise<IStationOutput[]> {
 		return await this.appService.getStationMany(body.email, body.password);

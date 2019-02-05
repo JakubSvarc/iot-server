@@ -10,7 +10,8 @@ export interface IStation extends Document {
     };
     activity: {
         since: number,
-        last: number,
+        lastStart: number,
+        lastEnd: number,
     };
     data: {
         [key: string]: any,

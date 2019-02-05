@@ -10,7 +10,8 @@ export const stationSchema: Schema = new Schema({
     },
     activity: {
         since: Number,
-        last: Number,
+        lastStart: Number,
+        lastEnd: Number,
     },
     data: {},
 }, {

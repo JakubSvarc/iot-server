@@ -1,9 +1,9 @@
-# iot-server
+# ZIOT-S
 
 
 ## Description
 
-My graduation work - simple server for Internet of Things, combining MQTT with HTTP.
+Simple server for Internet of Things, combining MQTT with HTTP.
 
 ## Installation
 

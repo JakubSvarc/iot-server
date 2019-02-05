@@ -29,7 +29,7 @@ export class DBWriteService {
 
 	public async createStation(stationMeta: IStation): Promise<string> {
 		stationMeta._id = uuid4();
-		stationMeta.activity = {since: 0, last: 0};
+		stationMeta.activity = {since: 0, lastStart: 0, lastEnd: 0};
 		stationMeta.activity.since = Date.now();
 		await new this.stationModel(stationMeta).save();
 		await this.userModel.updateOne({_id: stationMeta.userID}, {$addToSet: {stations: (stationMeta._id)}}, (err: any, res: {n: number, nModified: number, ok: number}) => {
@@ -42,12 +42,14 @@ export class DBWriteService {
 
 	// remove station (db remove, user.stations -> remove)
 
-	public async updateLastActivity(id: string): Promise<void> {
-		await this.stationModel.updateOne({_id: id}, {$set: {['activity.last']: Date.now()}}, (err: any, res: {n: number, nModified: number, ok: number}) => {
-			if (res.n === 0) {
-				// throw new BadRequestException(`Station with id: '${id}' doesn't exist!`);  --------> az po tvorbe exception handleru
-			}
-		});
+	public async updateLastActivity(type: 'Start' | 'End', id: string): Promise<void> {
+		const newValue: { [key: string]: number } = {
+			[`activity.last${type}`]: Date.now(),
+		};
+		if (type === 'Start') {
+			newValue['activity.lastEnd'] = 0;
+		}
+		await this.stationModel.updateOne({ _id: id }, { $set: newValue });
 	}
 
 	public async createData(stationID: string, newData: IStation01): Promise<void> {

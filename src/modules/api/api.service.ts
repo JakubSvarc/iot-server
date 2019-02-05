@@ -5,6 +5,7 @@ import { DBReadService } from '../db/db.read.service';
 import { IUser } from '../db/interfaces/user.interface';
 import { IStation } from '../db/interfaces/station.interface';
 import { ILoginDto } from './interfaces/login.dto';
+import { IValidationDto } from './interfaces/validation.dto';
 import { IStationOutput } from './interfaces/station.output';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class ApiService {
     	return await this.dBWriteService.register(body);
 	}
 
-	public async login(body: ILoginDto): Promise<IUser> {
+	public async login(body: ILoginDto): Promise<IValidationDto> {
     	return await this.dBReadService.login(body);
 	}
 
