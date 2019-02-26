@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 
 export const stationSchema: Schema = new Schema({
     _id: String,
+    name: String,
     type: String,
     userID: String,
     location: {
@@ -13,7 +14,6 @@ export const stationSchema: Schema = new Schema({
         lastStart: Number,
         lastEnd: Number,
     },
-    data: {},
 }, {
     versionKey: false,
 });

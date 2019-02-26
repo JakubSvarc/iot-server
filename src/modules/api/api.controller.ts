@@ -1,11 +1,10 @@
-import { Controller, Put, Post, Get, HttpCode, Body } from '@nestjs/common';
+import { Controller, Put, Post, HttpCode, Body } from '@nestjs/common';
 
 import { ApiService } from './api.service';
 import { IUser } from '../db/interfaces/user.interface';
 import { IStation } from '../db/interfaces/station.interface';
-import { IValidationDto } from './interfaces/validation.dto';
-import { ILoginDto } from './interfaces/login.dto';
-import { IStationOutput } from './interfaces/station.output';
+import { IAuthenticationDTO } from './interfaces/authentication.dto';
+import { ILoginDTO } from './interfaces/login.dto';
 
 @Controller()
 export class ApiController {
@@ -19,8 +18,14 @@ export class ApiController {
 
 	@Post('user/login')
 	@HttpCode(200)
-  	private async login(@Body() body: ILoginDto): Promise<IValidationDto> {
+  	private async login(@Body() body: ILoginDTO): Promise<IAuthenticationDTO> {
     	return await this.appService.login(body);
+	}
+
+	@Post('user/logout')
+	@HttpCode(204)
+  	private async logout(@Body() body: IAuthenticationDTO): Promise<void> {
+    	return await this.appService.logout(body);
 	}
 
 	@Put('station/create')
@@ -29,9 +34,15 @@ export class ApiController {
     	return await this.appService.createStation(body);
 	}
 
-	@Get('station/get/many')
+	@Post('user/get')
 	@HttpCode(200)
-	private async getStationMany(@Body() body: {email: string, password: string}): Promise<IStationOutput[]> {
-		return await this.appService.getStationMany(body.email, body.password);
+	private async getUser(@Body() body: IAuthenticationDTO): Promise<IUser> {
+		return await this.appService.getUser(body);
+	}
+
+	@Post('station/get/many')
+	@HttpCode(200)
+	private async getStationMany(@Body() body: IAuthenticationDTO): Promise<IStation[]> {
+		return await this.appService.getStationMany(body);
 	}
 }

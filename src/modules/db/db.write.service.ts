@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as uuid4 from 'uuid/v4';
@@ -29,12 +29,12 @@ export class DBWriteService {
 
 	public async createStation(stationMeta: IStation): Promise<string> {
 		stationMeta._id = uuid4();
-		stationMeta.activity = {since: 0, lastStart: 0, lastEnd: 0};
+		stationMeta.activity = { since: 0, lastStart: 0, lastEnd: 0 };
 		stationMeta.activity.since = Date.now();
 		await new this.stationModel(stationMeta).save();
-		await this.userModel.updateOne({_id: stationMeta.userID}, {$addToSet: {stations: (stationMeta._id)}}, (err: any, res: {n: number, nModified: number, ok: number}) => {
+		await this.userModel.updateOne({ _id: stationMeta.userID }, { $addToSet: { stations: (stationMeta.id) } }, (err: any, res: { n: number, nModified: number, ok: number }) => {
 			if (res.n === 0) {
-				// throw new BadRequestException(`Station with id: '${id}' doesn't exist!`);  --------> az po tvorbe exception handleru
+				throw new InternalServerErrorException(`Station creating failed!`);
 			}
 		});
 	  	return 'Station was sucesfully created!';

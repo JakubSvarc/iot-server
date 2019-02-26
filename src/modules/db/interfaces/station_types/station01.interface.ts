@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IStation01 extends Document {
-    _id: string;
+    id: string;
     inside: {
         temperature: number,
         humidity: number,
@@ -11,3 +11,4 @@ export interface IStation01 extends Document {
         humidity: number,
     };
 }
+// may be deleted
