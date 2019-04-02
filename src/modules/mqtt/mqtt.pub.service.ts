@@ -28,7 +28,6 @@ export class MqttPubService {
             if (!packet.topic.includes('$')) {
                 if (packet.topic.includes('/save')) {
                     const payload: IPayload = JSON.parse((packet.payload).toString('utf8'));
-                    // if (!(payloa)
                     await this.dBWriteService.createData((packet.topic).split('/')[1], payload.data);
                 }
             }

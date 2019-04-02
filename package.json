@@ -1,5 +1,5 @@
 {
-  "name": "iot-server",
+  "name": "ziot-s",
   "version": "1.0.0",
   "description": "My graduation work - simple server for Internet of Things, combining MQTT with HTTP.",
   "author": "Jakub Svarc",
@@ -12,11 +12,7 @@
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && tsc",
     "start:prod": "node dist/main.js",
-    "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "lint": "tslint -p tsconfig.json -c tslint.json"
   },
   "dependencies": {
     "@nestjs/common": "^5.6.2",
@@ -41,28 +37,11 @@
     "@types/mosca": "^2.8.1",
     "@types/node": "^10.12.18",
     "@types/supertest": "^2.0.7",
-    "jest": "^23.5.0",
     "nodemon": "^1.18.9",
-    "prettier": "^1.16.1",
     "supertest": "^3.4.2",
-    "ts-jest": "^23.10.5",
     "ts-loader": "^4.4.2",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.7.0",
     "tslint": "5.11.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }

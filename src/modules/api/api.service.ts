@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as uuid4 from 'uuid/v4';
 
 import { DBAccessService } from '../db/db.access.service';
 import { DBWriteService } from '../db/db.write.service';
@@ -12,20 +13,31 @@ import { IAuthenticationDTO } from './interfaces/authentication.dto';
 export class ApiService {
 	constructor(private readonly dBAccessService: DBAccessService, private readonly dBWriteService: DBWriteService, private readonly dBReadService: DBReadService) {}
 
-	public async register(body: IUser): Promise<string> {
-    	return await this.dBWriteService.register(body);
+	public async register(userMeta: IUser): Promise<string> {
+		userMeta._id = uuid4();
+		userMeta.tokens = [];
+		userMeta.stations = [];
+    	return await this.dBWriteService.register(userMeta);
 	}
 
-	public async login(body: ILoginDTO): Promise<IAuthenticationDTO> {
-    	return await this.dBAccessService.login(body);
+	public async login(login: ILoginDTO): Promise<IAuthenticationDTO> {
+		const newToken: string = uuid4();
+    	return await this.dBAccessService.login(login, newToken);
 	}
 
-	public async logout(body: IAuthenticationDTO): Promise<void> {
-    	return await this.dBAccessService.logout(body);
+	public async logout(auth: IAuthenticationDTO): Promise<void> {
+		if (await this.dBReadService.authorization(auth)) {
+			return await this.dBAccessService.logout(auth);
+		} else {
+			throw new UnauthorizedException('Nepovolený přístup!');
+		}
 	}
 
-	public async createStation(body: IStation): Promise<string> {
-	  	return await this.dBWriteService.createStation(body);
+	public async createStation(stationMeta: IStation): Promise<string> {
+		stationMeta._id = uuid4();
+		stationMeta.activity = { since: 0, lastStart: 0, lastEnd: 0 };
+		stationMeta.activity.since = Date.now();
+	  	return await this.dBWriteService.createStation(stationMeta);
   	}
 
 	public async getUser(auth: IAuthenticationDTO): Promise<IUser> {
@@ -33,6 +45,10 @@ export class ApiService {
 	}
 
 	public async getStationMany(auth: IAuthenticationDTO): Promise<IStation[]> {
-		return await this.dBReadService.getStationMany(auth);
+		if (await this.dBReadService.authorization(auth)) {
+			return await this.dBReadService.getStationMany(auth);
+		} else {
+			throw new UnauthorizedException('Nepovolený přístup!');
+		}
 	}
 }

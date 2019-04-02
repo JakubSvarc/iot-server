@@ -10,6 +10,22 @@ import { IAuthenticationDTO } from '../api/interfaces/authentication.dto';
 export class DBReadService {
 	constructor(@InjectModel('User') private readonly userModel: Model<IUser>, @InjectModel('Station') private readonly stationModel: Model<IStation>) {}
 
+	public async authorization(auth: IAuthenticationDTO): Promise<boolean> {
+		if (await this.userModel.countDocuments({ _id: auth.id, tokens: { $in: [auth.token] } }) === 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public async stationExists(stationID: string): Promise<boolean> {
+		if (await this.stationModel.countDocuments({ _id: stationID }) === 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public async getUser(auth: IAuthenticationDTO): Promise<IUser> {
 		const output: IUser = await this.userModel.findOne({ _id: auth.id, tokens: { $in: [auth.token] } }).select({ _id: 0, firstName: 1, lastName: 1, email: 1, stations: 1});
 		if (!output) {
@@ -20,18 +36,6 @@ export class DBReadService {
 	}
 
 	public async getStationMany(auth: IAuthenticationDTO): Promise<IStation[]> {
-		if (await this.userModel.countDocuments({ _id: auth.id, tokens: { $in: [auth.token] } }) !== 1) {
-			throw new UnauthorizedException('Nepovolený přístup!');
-		} else {
-			return await this.stationModel.find({ userID: auth.id }).select({ userID: 0 });
-		}
+		return await this.stationModel.find({ userID: auth.id }).select({ userID: 0 });
   	}
-
-	public async stationExists(stationID: string): Promise<boolean> {
-		if (await this.stationModel.countDocuments({ _id: stationID }) === 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

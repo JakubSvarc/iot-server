@@ -11,4 +11,3 @@ export interface IStation01 extends Document {
         humidity: number,
     };
 }
-// may be deleted

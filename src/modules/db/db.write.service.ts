@@ -21,16 +21,11 @@ export class DBWriteService {
 		private readonly resultModel: Model<IResult>) {}
 
 	public async register(userMeta: IUser): Promise<string> {
-		userMeta._id = uuid4();
-		userMeta.stations = [];
     	await new this.userModel(userMeta).save();
 		return 'User account was sucesfully created!';
 	}
 
 	public async createStation(stationMeta: IStation): Promise<string> {
-		stationMeta._id = uuid4();
-		stationMeta.activity = { since: 0, lastStart: 0, lastEnd: 0 };
-		stationMeta.activity.since = Date.now();
 		await new this.stationModel(stationMeta).save();
 		await this.userModel.updateOne({ _id: stationMeta.userID }, { $addToSet: { stations: (stationMeta.id) } }, (err: any, res: { n: number, nModified: number, ok: number }) => {
 			if (res.n === 0) {
@@ -39,8 +34,6 @@ export class DBWriteService {
 		});
 	  	return 'Station was sucesfully created!';
     }
-
-	// remove station (db remove, user.stations -> remove)
 
 	public async updateLastActivity(type: 'Start' | 'End', id: string): Promise<void> {
 		const newValue: { [key: string]: number } = {
