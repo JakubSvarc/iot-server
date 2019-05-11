@@ -30,8 +30,8 @@ export class ApiController {
 
 	@Put('station/create')
 	@HttpCode(200)
-  	private async createStation(@Body() body: IStation): Promise<string> {
-    	return await this.appService.createStation(body);
+  	private async createStation(@Body() body: { auth: IAuthenticationDTO, stationMeta: IStation }): Promise<string> {
+    	return await this.appService.createStation(body.auth, body.stationMeta);
 	}
 
 	@Post('user/get')

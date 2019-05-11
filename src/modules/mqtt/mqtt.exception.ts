@@ -1,6 +1,9 @@
 export class MqttException extends Error {
-    constructor(name: string, message: string) {
+    public clientID: string;
+
+    constructor(name: string, clientID: string, message: string) {
         super(message);
         this.name = name;
+        this.clientID = clientID;
     }
 }
